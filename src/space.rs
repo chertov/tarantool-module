@@ -11,7 +11,7 @@ use std::os::raw::c_char;
 use std::ptr::null_mut;
 
 use num_traits::ToPrimitive;
-use serde::{Serialize, Serializer};
+use serde::{Serialize, Serializer, Deserialize, Deserializer};
 use serde_json::{Map, Value};
 
 use crate::error::{Error, TarantoolError};
@@ -93,7 +93,8 @@ impl Into<Space> for SystemSpace {
 }
 
 /// Type of engine, used by space.
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Deserialize, PartialEq)]
+#[serde(rename_all="lowercase")]
 pub enum SpaceEngineType {
     Memtx,
     Vinyl,
@@ -144,11 +145,12 @@ impl Default for SpaceCreateOptions {
     }
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SpaceFieldFormat {
     pub name: String,
     #[serde(alias = "type")]
     pub field_type: SpaceFieldType,
+    pub is_nullable: Option<bool>,
 }
 
 impl SpaceFieldFormat {
@@ -156,11 +158,13 @@ impl SpaceFieldFormat {
         return SpaceFieldFormat {
             name: name.to_string(),
             field_type: ft,
+            is_nullable: None,
         };
     }
 }
 
-#[derive(Copy, Clone, Debug, Serialize)]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all="lowercase")]
 pub enum SpaceFieldType {
     Any,
     Unsigned,
@@ -217,6 +221,7 @@ pub struct Privilege {
 
 impl AsTuple for Privilege {}
 
+#[derive(Debug, Clone)]
 pub struct Space {
     id: u32,
 }
