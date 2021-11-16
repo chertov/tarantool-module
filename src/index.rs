@@ -17,6 +17,7 @@ use crate::ffi::tarantool as ffi;
 use crate::tuple::{AsTuple, Tuple, TupleBuffer};
 
 /// An index is a group of key values and pointers.
+#[derive(Debug, Clone)]
 pub struct Index {
     space_id: u32,
     index_id: u32,
@@ -149,7 +150,8 @@ pub enum IndexSequenceOption {
 }
 
 /// Type of index.
-#[derive(Copy, Clone, Debug, Serialize)]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all="UPPERCASE")]
 pub enum IndexType {
     Hash,
     Tree,
@@ -158,7 +160,8 @@ pub enum IndexType {
 }
 
 /// Type of index part.
-#[derive(Copy, Clone, Debug, Serialize)]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all="lowercase")]
 pub enum IndexFieldType {
     Unsigned,
     String,
@@ -174,7 +177,7 @@ pub enum IndexFieldType {
 }
 
 /// Index part.
-#[derive(Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct IndexPart {
     pub field_index: u32,
     pub field_type: IndexFieldType,
