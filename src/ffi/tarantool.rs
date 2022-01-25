@@ -9,7 +9,6 @@
 /// 6. Box - errors, sessions, sequences, transactions, indexes, spaces, tuples.
 use std::os::raw::{c_char, c_int, c_uint, c_void};
 
-use va_list::VaList;
 
 // Clock.
 extern "C" {
@@ -42,7 +41,7 @@ extern "C" {
         res: *mut *mut libc::addrinfo,
         timeout: f64,
     ) -> c_int;
-    pub fn coio_call(func: Option<unsafe extern "C" fn(VaList) -> c_int>, ...) -> isize;
+    pub fn coio_call(func: Option<unsafe extern "C" fn(std::ffi::VaList) -> c_int>, ...) -> isize;
 }
 
 // Fiber.
@@ -61,7 +60,7 @@ pub struct FiberCond {
     _unused: [u8; 0],
 }
 
-pub type FiberFunc = Option<unsafe extern "C" fn(VaList) -> c_int>;
+pub type FiberFunc = Option<unsafe extern "C" fn(std::ffi::VaList) -> c_int>;
 
 extern "C" {
     pub fn fiber_new(name: *const c_char, f: FiberFunc) -> *mut Fiber;

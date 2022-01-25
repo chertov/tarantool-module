@@ -14,8 +14,6 @@ use std::marker::PhantomData;
 use std::os::raw::c_void;
 use std::time::Duration;
 
-use va_list::VaList;
-
 use crate::error::{Error, TarantoolError};
 use crate::ffi::tarantool as ffi;
 
@@ -417,12 +415,12 @@ pub(crate) unsafe fn unpack_callback<F, T>(callback: &mut F) -> (*mut c_void, ff
 where
     F: FnMut(Box<T>) -> i32,
 {
-    unsafe extern "C" fn trampoline<F, T>(mut args: VaList) -> i32
+    unsafe extern "C" fn trampoline<F, T>(mut args: std::ffi::VaList) -> i32
     where
         F: FnMut(Box<T>) -> i32,
     {
-        let closure: &mut F = &mut *(args.get::<*const c_void>() as *mut F);
-        let arg = Box::from_raw(args.get::<*const c_void>() as *mut T);
+        let closure: &mut F = &mut *(args.arg::<*const c_void>() as *mut F);
+        let arg = Box::from_raw(args.arg::<*const c_void>() as *mut T);
         (*closure)(arg)
     }
     (callback as *mut F as *mut c_void, Some(trampoline::<F, T>))

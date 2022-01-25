@@ -1,3 +1,5 @@
+#![feature(c_variadic)]
+
 //! Tarantool C API bindings for Rust.
 //! This library contains the following Tarantool API's:
 //!
