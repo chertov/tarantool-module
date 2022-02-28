@@ -143,7 +143,7 @@ impl Tuple {
     }
 
     #[inline]
-    pub fn as_buffer(&self) -> Result<Vec<u8>, Error> {
+    pub(crate) fn as_buffer(&self) -> Result<Vec<u8>, Error> {
         let buffer_size = self.bsize();
         let mut buffer = Vec::<u8>::with_capacity(buffer_size);
 
