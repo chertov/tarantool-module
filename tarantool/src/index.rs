@@ -153,7 +153,7 @@ pub enum IndexSequenceOption {
 
 /// Type of index.
 #[derive(Copy, Clone, Debug, Serialize, Deserialize)]
-#[serde(rename_all="UPPERCASE")]
+#[serde(rename_all="lowercase")]
 pub enum IndexType {
     Hash,
     Tree,
